@@ -1,3 +1,6 @@
+# Why to use go-entity
+解脱双手，一键生成 gorm 所需要的 entity。
+
 # How to use
 ## 配置文件
 参照 `db.json.example` 中的格式编写配置文件。当 `tables` 为空数组时，表示对所有的表生成代码。

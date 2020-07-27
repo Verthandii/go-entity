@@ -1,0 +1,10 @@
+{{ $TableName := .BigCamelName -}}
+package entity
+
+type {{ $TableName }} struct {
+{{ range $index, $field := .Fields }}{{"\t"}}{{ $field.BigCamelName }}{{ range $field.BigCamelSpaces }} {{ end }}{{ $field.DataType }}{{ range $field.TypeSpaces }} {{ end }}`gorm:"column:{{ $field.Name }}{{ if eq $field.ColKey "PRI" }};PRIMARY_KEY{{ end }}"{{ range $field.TagGormSpaces }} {{ end }}json:"{{ $field.Name }}"`{{ range $field.TagJsonSpaces }} {{ end }}// {{ $field.Comment }}
+{{ end }}}
+
+func ({{ $TableName }}) TableName() string {
+	return "{{ .Name }}"
+}

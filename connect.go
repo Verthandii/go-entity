@@ -16,7 +16,7 @@ func Connect() Connection {
 		Passwd:               Cfg.Pwd,
 		DBName:               Cfg.DbName,
 		Net:                  "tcp",
-		Collation:            "utf8mb4_unicode_ci",
+		Collation:            Cfg.Collation,
 		AllowNativePasswords: true,
 	}
 	db, err := gorm.Open("mysql", cfg.FormatDSN())

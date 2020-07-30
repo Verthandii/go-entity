@@ -3,19 +3,21 @@ package main
 import "github.com/spf13/viper"
 
 type Config struct {
-	Host   string
-	User   string
-	Pwd    string
-	DbName string
-	Tables []string
+	Host      string
+	User      string
+	Pwd       string
+	DbName    string
+	Collation string
+	Tables    []string
 }
 
 var Cfg = Config{
-	Host:   "127.0.0.1",
-	User:   "root",
-	Pwd:    "123123",
-	DbName: "test",
-	Tables: nil,
+	Host:      "",
+	User:      "root",
+	Pwd:       "",
+	DbName:    "",
+	Collation: "utf8mb4_unicode_ci",
+	Tables:    nil,
 }
 
 func init() {
@@ -33,8 +35,16 @@ func init() {
 	}
 
 	Cfg.Host = parser.GetString("host")
-	Cfg.User = parser.GetString("user")
+	if user := parser.GetString("user"); user != "" {
+		Cfg.User = user
+	}
 	Cfg.Pwd = parser.GetString("pwd")
 	Cfg.DbName = parser.GetString("dbname")
+	if Cfg.DbName == "" {
+		panic("DbName must be specified")
+	}
+	if collation := parser.GetString("collation"); collation != "" {
+		Cfg.Collation = collation
+	}
 	Cfg.Tables = parser.GetStringSlice("tables")
 }

@@ -27,7 +27,7 @@ func main() {
 			}
 		}
 
-		err = ioutil.WriteFile(modelPath+ToBigCamelCase(table.Name)+".go", []byte(modelStr), 0644)
+		err = ioutil.WriteFile(modelPath+table.Name+".go", []byte(modelStr), 0644)
 		if err != nil {
 			fmt.Println("err:", err.Error())
 			return

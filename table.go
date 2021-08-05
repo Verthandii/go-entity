@@ -1,5 +1,7 @@
 package main
 
+import "strings"
+
 var (
 	TableSQL = "SELECT " +
 		"table_name name " +
@@ -53,6 +55,7 @@ func InitTables(tables []Table) []Table {
 
 		tables[i].BigCamelName = ToBigCamelCase(tables[i].Name)
 		for j := range tables[i].Fields {
+			tables[i].Fields[j].Comment = strings.ReplaceAll(tables[i].Fields[j].Comment, "\n", " ")
 			tables[i].Fields[j].BigCamelName = ToBigCamelCase(tables[i].Fields[j].Name)
 			tables[i].Fields[j].DataType = TransformType(tables[i].Fields[j].DataType)
 

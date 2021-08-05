@@ -19,6 +19,8 @@ func TransformType(typeStr string) string {
 		return "int64"
 	case "varchar":
 		return "string"
+	case "timestamp":
+		return "time.Time"
 	default:
 		return "int64"
 	}

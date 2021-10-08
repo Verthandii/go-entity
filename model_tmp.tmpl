@@ -10,3 +10,31 @@ type {{ $TableName }} struct {
 func ({{ $TableName }}) TableName() string {
 	return "{{ .Name }}"
 }
+
+{{ $SliceStruct := printf "%sSlice" $TableName }}
+
+type {{ $SliceStruct }} []*{{ $TableName }}
+
+{{ range $index, $field := .Fields }}
+func (receiver *{{ $SliceStruct }}) Pluck{{ $field.BigCamelName }}() []{{ $field.DataType }} {
+    	res := make([]{{ $field.DataType }}, 0, len(*receiver))
+    	for _, item := range *receiver {
+    		res = append(res, item.{{ $field.BigCamelName }})
+    	}
+    	return res
+}
+{{ end }}
+
+{{ range $index, $field := .Fields }}
+func (receiver *{{ $SliceStruct }}) Unique{{ $field.BigCamelName }}() []{{ $field.DataType }} {
+	m := make(map[{{ $field.DataType }}]struct{})
+	res := make([]{{ $field.DataType }}, 0)
+	for _, item := range *receiver {
+		m[item.{{ $field.BigCamelName }}] = struct{}{}
+	}
+	for key := range m {
+		res = append(res, key)
+	}
+	return res
+}
+{{ end }}

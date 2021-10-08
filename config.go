@@ -1,14 +1,18 @@
 package main
 
-import "github.com/spf13/viper"
+import (
+	"os"
+
+	"github.com/spf13/viper"
+)
 
 type Config struct {
-	Host      string
-	User      string
-	Pwd       string
-	DbName    string
-	Collation string
-	Tables    []string
+	Host      string   `json:"host"      mapstructure:"host"`
+	User      string   `json:"user"      mapstructure:"user"`
+	Pwd       string   `json:"pwd"       mapstructure:"pwd"`
+	DbName    string   `json:"db_name"   mapstructure:"dbname"`
+	Collation string   `json:"collation" mapstructure:"collation"`
+	Tables    []string `json:"tables"    mapstructure:"tables"`
 }
 
 var Cfg = Config{
@@ -20,12 +24,14 @@ var Cfg = Config{
 	Tables:    nil,
 }
 
-func init() {
-	parser := viper.New()
-	parser.SetConfigName("db")
-	parser.SetConfigType("json")
-	parser.AddConfigPath(".")
-	if err := parser.ReadInConfig(); err != nil {
+func initConfig() {
+	path, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+
+	viper.SetConfigFile(path + "/db.json")
+	if err = viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 			panic("未找到配置文件")
 		} else {
@@ -34,17 +40,7 @@ func init() {
 		}
 	}
 
-	Cfg.Host = parser.GetString("host")
-	if user := parser.GetString("user"); user != "" {
-		Cfg.User = user
+	if err = viper.Unmarshal(&Cfg); err != nil {
+		panic(err)
 	}
-	Cfg.Pwd = parser.GetString("pwd")
-	Cfg.DbName = parser.GetString("dbname")
-	if Cfg.DbName == "" {
-		panic("DbName must be specified")
-	}
-	if collation := parser.GetString("collation"); collation != "" {
-		Cfg.Collation = collation
-	}
-	Cfg.Tables = parser.GetStringSlice("tables")
 }

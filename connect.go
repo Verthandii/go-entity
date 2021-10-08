@@ -9,7 +9,7 @@ type Connection struct {
 	DB *gorm.DB
 }
 
-func Connect() Connection {
+func connectMySQL() Connection {
 	cfg := mysql.Config{
 		Addr:                 Cfg.Host,
 		User:                 Cfg.User,

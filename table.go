@@ -1,6 +1,9 @@
 package main
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 var (
 	TableSQL = "SELECT " +
@@ -8,29 +11,36 @@ var (
 		"FROM " +
 		"information_schema.tables " +
 		"WHERE " +
-		"table_schema=?"
+		"table_schema = ?"
 	FieldSQL = "SELECT " +
 		"COLUMN_NAME name, COLUMN_KEY col_key, COLUMN_COMMENT comment, DATA_TYPE data_type " +
 		"FROM " +
 		"information_schema.columns " +
 		"WHERE " +
-		"table_schema=? AND table_name=? " +
+		"table_schema = ? AND table_name = ? " +
 		"ORDER BY ordinal_position ASC"
 )
 
 type Table struct {
-	Name         string
+	Name string
+
+	Imports      string
 	BigCamelName string
 	Fields       []Field
-
-	LongestBigCamelColLen int
-	LongestTagGORMLen     int
-	LongestTagJsonLen     int
-	LongestTypeLen        int
 }
 
-func GetTablesInfo() []Table {
-	connection := Connect()
+type Field struct {
+	Name     string
+	ColKey   string
+	Comment  string
+	DataType string
+
+	BigCamelName string
+	Tag          string
+}
+
+func GetTables() []Table {
+	connection := connectMySQL()
 
 	var tables []Table
 	if len(Cfg.Tables) > 0 {
@@ -46,47 +56,47 @@ func GetTablesInfo() []Table {
 		connection.DB.Raw(FieldSQL, Cfg.DbName, table.Name).Scan(&columns)
 		tables[i].Fields = columns
 	}
-	return InitTables(tables)
+	return initTables(tables)
 }
 
-func InitTables(tables []Table) []Table {
+func initTables(tables []Table) []Table {
 	for i := range tables {
-		longestBigCamelColLen, longestTagGORMLen, longestTagJsonLen, longestTypeLen := 0, 0, 0, 0
+		longestTagGORMLen := 0
 
 		tables[i].BigCamelName = ToBigCamelCase(tables[i].Name)
+
 		for j := range tables[i].Fields {
 			tables[i].Fields[j].Comment = strings.ReplaceAll(tables[i].Fields[j].Comment, "\n", " ")
 			tables[i].Fields[j].BigCamelName = ToBigCamelCase(tables[i].Fields[j].Name)
 			tables[i].Fields[j].DataType = TransformType(tables[i].Fields[j].DataType)
 
+			if tables[i].Fields[j].DataType == "time.Time" {
+				tables[i].Imports = `import "time"`
+			}
+
 			tagGORMLen := len(tables[i].Fields[j].Name)
 			if tables[i].Fields[j].ColKey == "PRI" {
 				tagGORMLen += len(";PRIMARY_KEY")
 			}
 
-			longestBigCamelColLen = MaxFunc(longestBigCamelColLen, len(tables[i].Fields[j].BigCamelName))
 			longestTagGORMLen = MaxFunc(longestTagGORMLen, tagGORMLen)
-			longestTagJsonLen = MaxFunc(longestTagJsonLen, len(tables[i].Fields[j].Name))
-			longestTypeLen = MaxFunc(longestTypeLen, len(tables[i].Fields[j].DataType))
 		}
-		tables[i].LongestBigCamelColLen = longestBigCamelColLen
-		tables[i].LongestTagGORMLen = longestTagGORMLen
-		tables[i].LongestTagJsonLen = longestTagJsonLen
-		tables[i].LongestTypeLen = longestTypeLen
-	}
 
-	for i := range tables {
 		for j := range tables[i].Fields {
-			tagGORMLen := len(tables[i].Fields[j].Name)
+			gormTag := tables[i].Fields[j].Name
 			if tables[i].Fields[j].ColKey == "PRI" {
-				tagGORMLen += len(";PRIMARY_KEY")
+				gormTag += ";PRIMARY_KEY"
 			}
 
-			tables[i].Fields[j].BigCamelSpaces = make([]string, tables[i].LongestBigCamelColLen-len(tables[i].Fields[j].BigCamelName)+1)
-			tables[i].Fields[j].TagGormSpaces = make([]string, tables[i].LongestTagGORMLen-tagGORMLen+1)
-			tables[i].Fields[j].TagJsonSpaces = make([]string, tables[i].LongestTagJsonLen-len(tables[i].Fields[j].Name)+1)
-			tables[i].Fields[j].TypeSpaces = make([]string, tables[i].LongestTypeLen-len(tables[i].Fields[j].DataType)+1)
+			tag := fmt.Sprintf(`gorm:"%s"`, gormTag)
+			for i := 0; i < longestTagGORMLen-len(gormTag)+1; i++ {
+				tag += " "
+			}
+			tag += fmt.Sprintf(`json:"%s"`, tables[i].Fields[j].Name)
+
+			tables[i].Fields[j].Tag = tag
 		}
 	}
+
 	return tables
 }

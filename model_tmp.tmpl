@@ -1,9 +1,10 @@
-// generate by go entity https://github.com/CryBecase/go-entity
 {{ $TableName := .BigCamelName -}}
-package entity
+package model
+
+{{ .Imports }}
 
 type {{ $TableName }} struct {
-{{ range $index, $field := .Fields }}{{"\t"}}{{ $field.BigCamelName }}{{ range $field.BigCamelSpaces }} {{ end }}{{ $field.DataType }}{{ range $field.TypeSpaces }} {{ end }}`gorm:"column:{{ $field.Name }}{{ if eq $field.ColKey "PRI" }};PRIMARY_KEY{{ end }}"{{ range $field.TagGormSpaces }} {{ end }}json:"{{ $field.Name }}"`{{ range $field.TagJsonSpaces }} {{ end }}// {{ $field.Comment }}
+{{ range $index, $field := .Fields }}{{ $field.BigCamelName }} {{ $field.DataType }} `{{ $field.Tag }}`// {{ $field.Comment }}
 {{ end }}}
 
 func ({{ $TableName }}) TableName() string {

@@ -3,31 +3,41 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"go/format"
 	"io/ioutil"
 	"os"
 	"text/template"
 )
 
-func main() {
-	modelPath := "./entity/"
+const _modelPath = "./model/"
 
-	tables := GetTablesInfo()
+func main() {
+	initConfig()
+
+	tables := GetTables()
 	for _, table := range tables {
 		modelStr, err := genGo(table)
 		if err != nil {
 			fmt.Println("err:", err.Error())
 			return
 		}
-		_, err = os.Open(modelPath)
+
+		formated, err := format.Source([]byte(modelStr))
 		if err != nil {
-			err = os.MkdirAll(modelPath, 0644)
+			fmt.Println("err:", err.Error())
+			return
+		}
+
+		_, err = os.Open(_modelPath)
+		if err != nil {
+			err = os.MkdirAll(_modelPath, 0644)
 			if err != nil {
 				fmt.Println("err:", err.Error())
 				return
 			}
 		}
 
-		err = ioutil.WriteFile(modelPath+table.Name+".go", []byte(modelStr), 0644)
+		err = ioutil.WriteFile(_modelPath+table.Name+".go", formated, 0644)
 		if err != nil {
 			fmt.Println("err:", err.Error())
 			return
@@ -36,7 +46,6 @@ func main() {
 }
 
 func genGo(table Table) (string, error) {
-	// 解析 model
 	modelFiles, err := template.ParseFiles("./model_tmp.tmpl")
 	if err != nil {
 		return "", err

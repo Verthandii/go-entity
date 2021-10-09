@@ -17,6 +17,18 @@ func ({{ $TableName }}) TableName() string {
 type {{ $SliceStruct }} []*{{ $TableName }}
 
 {{ range $index, $field := .Fields }}
+{{ if eq $field.ColKey "PRI" }}
+func (receiver *{{ $SliceStruct }}) IdMap() map[{{ $field.DataType }}]*{{ $TableName }} {
+	m := make(map[{{ $field.DataType }}]*{{ $TableName }})
+	for _, item := range *receiver {
+		m[item.{{ $field.BigCamelName }}] = item
+	}
+	return m
+}
+{{ end }}
+{{ end }}
+
+{{ range $index, $field := .Fields }}
 func (receiver *{{ $SliceStruct }}) Pluck{{ $field.BigCamelName }}() []{{ $field.DataType }} {
     	res := make([]{{ $field.DataType }}, 0, len(*receiver))
     	for _, item := range *receiver {

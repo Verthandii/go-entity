@@ -64,6 +64,14 @@ func (Media) TableName() string {
 
 type MediaSlice []*Media
 
+func (receiver *MediaSlice) IdMap() map[string]*Media {
+	m := make(map[string]*Media)
+	for _, item := range *receiver {
+		m[item.Id] = item
+	}
+	return m
+}
+
 func (receiver *MediaSlice) PluckId() []string {
 	res := make([]string, 0, len(*receiver))
 	for _, item := range *receiver {

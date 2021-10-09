@@ -25,6 +25,7 @@ type Table struct {
 	Name    string
 	Comment string
 
+	FirstLetter  string
 	Imports      string
 	BigCamelName string
 	Fields       []Field
@@ -65,6 +66,7 @@ func initTables(tables []Table) []Table {
 		longestTagGORMLen := 0
 
 		tables[i].BigCamelName = ToBigCamelCase(tables[i].Name)
+		tables[i].FirstLetter = string(tables[i].Name[0])
 		if tables[i].Comment == "" {
 			tables[i].Comment = "."
 		}

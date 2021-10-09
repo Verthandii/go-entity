@@ -1,4 +1,5 @@
 {{ $TableName := .BigCamelName }}
+{{ $FirstLetter := .FirstLetter }}
 package model
 
 {{ .Imports }}
@@ -8,7 +9,7 @@ type {{ $TableName }} struct {
 {{ range $index, $field := .Fields }}{{ $field.BigCamelName }} {{ $field.DataType }} `{{ $field.Tag }}`// {{ $field.Comment }}
 {{ end }}}
 
-func ({{ $TableName }}) TableName() string {
+func (*{{ $TableName }}) TableName() string {
 	return "{{ .Name }}"
 }
 
@@ -18,20 +19,20 @@ type {{ $SliceStruct }} []*{{ $TableName }}
 
 {{ range $index, $field := .Fields }}
 {{ if eq $field.ColKey "PRI" }}
-func (receiver *{{ $SliceStruct }}) IdMap() map[{{ $field.DataType }}]*{{ $TableName }} {
-	m := make(map[{{ $field.DataType }}]*{{ $TableName }})
-	for _, item := range *receiver {
-		m[item.{{ $field.BigCamelName }}] = item
+func ({{ $FirstLetter }} *{{ $SliceStruct }}) IdMap() map[{{ $field.DataType }}]*{{ $TableName }} {
+	uni := make(map[{{ $field.DataType }}]*{{ $TableName }})
+	for _, item := range *{{ $FirstLetter }} {
+		uni[item.{{ $field.BigCamelName }}] = item
 	}
-	return m
+	return uni
 }
 {{ end }}
 {{ end }}
 
 {{ range $index, $field := .Fields }}
-func (receiver *{{ $SliceStruct }}) Pluck{{ $field.BigCamelName }}() []{{ $field.DataType }} {
-    	res := make([]{{ $field.DataType }}, 0, len(*receiver))
-    	for _, item := range *receiver {
+func ({{ $FirstLetter }} *{{ $SliceStruct }}) Pluck{{ $field.BigCamelName }}() []{{ $field.DataType }} {
+    	res := make([]{{ $field.DataType }}, 0, len(*{{ $FirstLetter }}))
+    	for _, item := range *{{ $FirstLetter }} {
     		res = append(res, item.{{ $field.BigCamelName }})
     	}
     	return res
@@ -39,13 +40,13 @@ func (receiver *{{ $SliceStruct }}) Pluck{{ $field.BigCamelName }}() []{{ $field
 {{ end }}
 
 {{ range $index, $field := .Fields }}
-func (receiver *{{ $SliceStruct }}) Unique{{ $field.BigCamelName }}() []{{ $field.DataType }} {
-	m := make(map[{{ $field.DataType }}]struct{})
+func ({{ $FirstLetter }} *{{ $SliceStruct }}) Unique{{ $field.BigCamelName }}() []{{ $field.DataType }} {
+	uni := make(map[{{ $field.DataType }}]struct{})
 	res := make([]{{ $field.DataType }}, 0)
-	for _, item := range *receiver {
-		m[item.{{ $field.BigCamelName }}] = struct{}{}
+	for _, item := range *{{ $FirstLetter }} {
+		uni[item.{{ $field.BigCamelName }}] = struct{}{}
 	}
-	for key := range m {
+	for key := range uni {
 		res = append(res, key)
 	}
 	return res

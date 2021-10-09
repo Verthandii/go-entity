@@ -58,75 +58,75 @@ type Media struct {
 	Type int    `gorm:"type"           json:"type"` // 1. 图片
 }
 
-func (Media) TableName() string {
+func (*Media) TableName() string {
 	return "media"
 }
 
 type MediaSlice []*Media
 
-func (receiver *MediaSlice) IdMap() map[string]*Media {
-	m := make(map[string]*Media)
-	for _, item := range *receiver {
-		m[item.Id] = item
+func (m *MediaSlice) IdMap() map[string]*Media {
+	uni := make(map[string]*Media)
+	for _, item := range *m {
+		uni[item.Id] = item
 	}
-	return m
+	return uni
 }
 
-func (receiver *MediaSlice) PluckId() []string {
-	res := make([]string, 0, len(*receiver))
-	for _, item := range *receiver {
+func (m *MediaSlice) PluckId() []string {
+	res := make([]string, 0, len(*m))
+	for _, item := range *m {
 		res = append(res, item.Id)
 	}
 	return res
 }
 
-func (receiver *MediaSlice) PluckUrl() []string {
-	res := make([]string, 0, len(*receiver))
-	for _, item := range *receiver {
+func (m *MediaSlice) PluckUrl() []string {
+	res := make([]string, 0, len(*m))
+	for _, item := range *m {
 		res = append(res, item.Url)
 	}
 	return res
 }
 
-func (receiver *MediaSlice) PluckType() []int {
-	res := make([]int, 0, len(*receiver))
-	for _, item := range *receiver {
+func (m *MediaSlice) PluckType() []int {
+	res := make([]int, 0, len(*m))
+	for _, item := range *m {
 		res = append(res, item.Type)
 	}
 	return res
 }
 
-func (receiver *MediaSlice) UniqueId() []string {
-	m := make(map[string]struct{})
+func (m *MediaSlice) UniqueId() []string {
+	uni := make(map[string]struct{})
 	res := make([]string, 0)
-	for _, item := range *receiver {
-		m[item.Id] = struct{}{}
+	for _, item := range *m {
+		uni[item.Id] = struct{}{}
 	}
-	for key := range m {
+	for key := range uni {
 		res = append(res, key)
 	}
 	return res
 }
 
-func (receiver *MediaSlice) UniqueUrl() []string {
-	m := make(map[string]struct{})
+func (m *MediaSlice) UniqueUrl() []string {
+	uni := make(map[string]struct{})
 	res := make([]string, 0)
-	for _, item := range *receiver {
-		m[item.Url] = struct{}{}
+	for _, item := range *m {
+		uni[item.Url] = struct{}{}
 	}
-	for key := range m {
+	for key := range uni {
 		res = append(res, key)
 	}
 	return res
 }
 
-func (receiver *MediaSlice) UniqueType() []int {
-	m := make(map[int]struct{})
+func (m *MediaSlice) UniqueType() []int {
+	uni := make(map[int]struct{})
 	res := make([]int, 0)
-	for _, item := range *receiver {
-		m[item.Type] = struct{}{}
+	for _, item := range *m {
+		uni[item.Type] = struct{}{}
 	}
-	for key := range m {
+	for key := range uni {
 		res = append(res, key)
 	}
 	return res

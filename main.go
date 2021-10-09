@@ -2,9 +2,9 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"go/format"
 	"io/ioutil"
+	"log"
 	"os"
 	"text/template"
 )
@@ -18,30 +18,28 @@ func main() {
 	for _, table := range tables {
 		modelStr, err := genGo(table)
 		if err != nil {
-			fmt.Println("err:", err.Error())
-			return
+			log.Fatalln("gen go occurred error:", err)
 		}
 
 		formated, err := format.Source([]byte(modelStr))
 		if err != nil {
-			fmt.Println("err:", err.Error())
-			return
+			log.Fatalln("format source occurred error:", err)
 		}
 
 		_, err = os.Open(_modelPath)
 		if err != nil {
 			err = os.MkdirAll(_modelPath, 0644)
 			if err != nil {
-				fmt.Println("err:", err.Error())
-				return
+				log.Fatalln("os mkdir occurred error:", err)
 			}
 		}
 
-		err = ioutil.WriteFile(_modelPath+table.Name+".go", formated, 0644)
+		filename := _modelPath + table.Name + ".go"
+		err = ioutil.WriteFile(filename, formated, 0644)
 		if err != nil {
-			fmt.Println("err:", err.Error())
-			return
+			log.Fatalln("write file occurred error:", err)
 		}
+		log.Println("complete file", filename)
 	}
 }
 

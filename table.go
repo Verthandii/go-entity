@@ -7,7 +7,7 @@ import (
 
 var (
 	TableSQL = "SELECT " +
-		"table_name name " +
+		"`table_name` AS `name`, `table_comment` AS `comment` " +
 		"FROM " +
 		"information_schema.tables " +
 		"WHERE " +
@@ -22,7 +22,8 @@ var (
 )
 
 type Table struct {
-	Name string
+	Name    string
+	Comment string
 
 	Imports      string
 	BigCamelName string
@@ -64,6 +65,9 @@ func initTables(tables []Table) []Table {
 		longestTagGORMLen := 0
 
 		tables[i].BigCamelName = ToBigCamelCase(tables[i].Name)
+		if tables[i].Comment == "" {
+			tables[i].Comment = "."
+		}
 
 		for j := range tables[i].Fields {
 			tables[i].Fields[j].Comment = strings.ReplaceAll(tables[i].Fields[j].Comment, "\n", " ")

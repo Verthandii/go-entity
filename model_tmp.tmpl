@@ -1,8 +1,9 @@
-{{ $TableName := .BigCamelName -}}
+{{ $TableName := .BigCamelName }}
 package model
 
 {{ .Imports }}
 
+// {{ $TableName }} {{ .Comment }}
 type {{ $TableName }} struct {
 {{ range $index, $field := .Fields }}{{ $field.BigCamelName }} {{ $field.DataType }} `{{ $field.Tag }}`// {{ $field.Comment }}
 {{ end }}}

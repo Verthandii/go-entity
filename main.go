@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"go/format"
 	"io/ioutil"
 	"log"
@@ -33,12 +34,16 @@ func main() {
 			}
 		}
 
-		filename := output + table.Name + ".go"
-		err = ioutil.WriteFile(filename, formated, 0644)
-		if err != nil {
-			log.Fatalln("write file occurred error:", err)
+		if Cfg.Terminal {
+			fmt.Println(string(formated))
+		} else {
+			filename := output + table.Name + ".go"
+			err = ioutil.WriteFile(filename, formated, 0644)
+			if err != nil {
+				log.Fatalln("write file occurred error:", err)
+			}
+			log.Println("complete file", filename)
 		}
-		log.Println("complete file", filename)
 	}
 }
 

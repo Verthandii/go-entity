@@ -5,5 +5,6 @@
   "dbname": "test",
   "collation": "utf8mb4_unicode_ci",
   "tables": ["user"],
-  "output": "./model"
+  "output": "./model",
+  "terminal": true
 }

@@ -15,12 +15,19 @@
   "pwd": "pwd",
   "dbname": "test",
   "collation": "utf8mb4_unicode_ci",
-  "tables": ["user"],
-  "output": "./model"
+  "tables": [
+    "user"
+  ],
+  "output": "./model",
+  "terminal": true
 }
 ```
 
-注意：当 `tables` 为空数组时，表示对所有的表生成代码。
+> tables 为空数组时，表示对所有的表生成代码
+> 
+> output 指定输出目录，只有当 terminal 为 false 时生效
+> 
+> terminal 为 true 时输出到控制台
 
 ## Get Started
 

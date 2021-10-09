@@ -14,6 +14,7 @@ type Config struct {
 	Collation string   `json:"collation" mapstructure:"collation"`
 	Tables    []string `json:"tables"    mapstructure:"tables"`
 	Output    string   `json:"output"    mapstructure:"output"`
+	Terminal  bool     `json:"terminal"  mapstructure:"terminal"`
 }
 
 var Cfg = Config{
@@ -24,6 +25,7 @@ var Cfg = Config{
 	Collation: "utf8mb4_unicode_ci",
 	Tables:    nil,
 	Output:    "./model",
+	Terminal:  false,
 }
 
 func initConfig() {

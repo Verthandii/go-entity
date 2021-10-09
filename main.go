@@ -26,17 +26,16 @@ func main() {
 			log.Fatalln("format source occurred error:", err)
 		}
 
-		_, err = os.Open(output)
-		if err != nil {
-			err = os.MkdirAll(output, 0644)
-			if err != nil {
-				log.Fatalln("os mkdir occurred error:", err)
-			}
-		}
-
 		if Cfg.Terminal {
 			fmt.Println(string(formated))
 		} else {
+			_, err = os.Open(output)
+			if err != nil {
+				err = os.MkdirAll(output, 0644)
+				if err != nil {
+					log.Fatalln("os mkdir occurred error:", err)
+				}
+			}
 			filename := output + table.Name + ".go"
 			err = ioutil.WriteFile(filename, formated, 0644)
 			if err != nil {

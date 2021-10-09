@@ -9,10 +9,9 @@ import (
 	"text/template"
 )
 
-const _modelPath = "./model/"
-
 func main() {
 	initConfig()
+	output := Cfg.Output
 
 	tables := GetTables()
 	for _, table := range tables {
@@ -26,15 +25,15 @@ func main() {
 			log.Fatalln("format source occurred error:", err)
 		}
 
-		_, err = os.Open(_modelPath)
+		_, err = os.Open(output)
 		if err != nil {
-			err = os.MkdirAll(_modelPath, 0644)
+			err = os.MkdirAll(output, 0644)
 			if err != nil {
 				log.Fatalln("os mkdir occurred error:", err)
 			}
 		}
 
-		filename := _modelPath + table.Name + ".go"
+		filename := output + table.Name + ".go"
 		err = ioutil.WriteFile(filename, formated, 0644)
 		if err != nil {
 			log.Fatalln("write file occurred error:", err)

@@ -4,5 +4,6 @@
   "pwd": "pwd",
   "dbname": "test",
   "collation": "utf8mb4_unicode_ci",
-  "tables": ["user"]
+  "tables": ["user"],
+  "output": "./model"
 }

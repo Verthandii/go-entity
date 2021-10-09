@@ -13,6 +13,7 @@ type Config struct {
 	DbName    string   `json:"db_name"   mapstructure:"dbname"`
 	Collation string   `json:"collation" mapstructure:"collation"`
 	Tables    []string `json:"tables"    mapstructure:"tables"`
+	Output    string   `json:"output"    mapstructure:"output"`
 }
 
 var Cfg = Config{
@@ -22,6 +23,7 @@ var Cfg = Config{
 	DbName:    "",
 	Collation: "utf8mb4_unicode_ci",
 	Tables:    nil,
+	Output:    "./model",
 }
 
 func initConfig() {
@@ -42,5 +44,9 @@ func initConfig() {
 
 	if err = viper.Unmarshal(&Cfg); err != nil {
 		panic(err)
+	}
+
+	if Cfg.Output[len(Cfg.Output)-1] != '/' {
+		Cfg.Output += "/"
 	}
 }

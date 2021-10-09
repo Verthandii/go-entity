@@ -14,9 +14,9 @@
   "user": "root",
   "pwd": "pwd",
   "dbname": "test",
-  "tables": [
-    "user"
-  ]
+  "collation": "utf8mb4_unicode_ci",
+  "tables": ["user"],
+  "output": "./model"
 }
 ```
 

@@ -79,6 +79,14 @@ func (m *MediaSlice) IdMap() map[string]*Media {
 	return uni
 }
 
+func (m *MediaSlice) GroupByUrl() map[string]MediaSlice {
+	res := make(map[string]MediaSlice)
+	for _, item := range *m {
+		res[item.Url] = append(res[item.Url], item)
+    }
+    return res
+}
+
 func (m *MediaSlice) PluckId() []string {
 	res := make([]string, 0, len(*m))
 	for _, item := range *m {

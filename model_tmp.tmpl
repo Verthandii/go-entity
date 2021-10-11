@@ -26,6 +26,15 @@ func ({{ $FirstLetter }} *{{ $SliceStruct }}) IdMap() map[{{ $field.DataType }}]
 	}
 	return uni
 }
+{{ else }}
+
+func ({{ $FirstLetter }} *{{ $SliceStruct }}) GroupBy{{ $field.BigCamelName }}() map[{{ $field.DataType }}]{{ $SliceStruct }} {
+	res := make(map[{{ $field.DataType }}]{{ $SliceStruct }})
+	for _, item := range *{{ $FirstLetter }} {
+		res[item.{{ $field.BigCamelName }}] = append(res[item.{{ $field.BigCamelName }}], item)
+    }
+    return res
+}
 {{ end }}
 {{ end }}
 

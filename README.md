@@ -83,8 +83,16 @@ func (m *MediaSlice) GroupByUrl() map[string]MediaSlice {
 	res := make(map[string]MediaSlice)
 	for _, item := range *m {
 		res[item.Url] = append(res[item.Url], item)
-    }
-    return res
+	}
+	return res
+}
+
+func (m *MediaSlice) GroupByType() map[int]MediaSlice {
+	res := make(map[int]MediaSlice)
+	for _, item := range *m {
+		res[item.Type] = append(res[item.Type], item)
+	}
+	return res
 }
 
 func (m *MediaSlice) PluckId() []string {

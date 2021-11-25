@@ -11,15 +11,13 @@
 ```json
 {
   "host": "127.0.0.1",
-  "user": "root",
-  "pwd": "pwd",
+  "port": 3306,
+  "username": "root",
+  "password": "root",
   "dbname": "test",
-  "collation": "utf8mb4_unicode_ci",
-  "tables": [
-    "user"
-  ],
-  "output": "./model",
-  "terminal": true
+  "tables": ["user"],
+  "output": "./pkg/",
+  "terminal": false
 }
 ```
 

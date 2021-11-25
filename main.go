@@ -14,8 +14,7 @@ func main() {
 	initConfig()
 	output := Cfg.Output
 
-	tables := GetTables()
-	for _, table := range tables {
+	for _, table := range GetTables() {
 		modelStr, err := genGo(table)
 		if err != nil {
 			log.Fatalln("gen go occurred error:", err)
@@ -47,12 +46,13 @@ func main() {
 }
 
 func genGo(table Table) (string, error) {
-	modelFiles, err := template.ParseFiles("./model_tmp.tmpl")
+	t := template.New("model_tmpl")
+	t, err := t.Parse(modelTmpl)
 	if err != nil {
-		return "", err
+		panic(err)
 	}
 	var modelsBuf bytes.Buffer
-	err = modelFiles.Execute(&modelsBuf, table)
+	err = t.Execute(&modelsBuf, table)
 	if err != nil {
 		return "", err
 	}

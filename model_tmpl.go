@@ -1,3 +1,6 @@
+package main
+
+const modelTmpl = `
 {{ $TableName := .BigCamelName }}
 {{ $FirstLetter := .FirstLetter }}
 package model
@@ -6,7 +9,7 @@ package model
 
 // {{ $TableName }} {{ .Comment }}
 type {{ $TableName }} struct {
-{{ range $index, $field := .Fields }}{{ $field.BigCamelName }} {{ $field.DataType }} `{{ $field.Tag }}`// {{ $field.Comment }}
+{{ range $index, $field := .Fields }}{{ $field.BigCamelName }} {{ $field.DataType }} {{ $field.Tag }} // {{ $field.Comment }}
 {{ end }}}
 
 func (*{{ $TableName }}) TableName() string {
@@ -61,3 +64,4 @@ func ({{ $FirstLetter }} *{{ $SliceStruct }}) Unique{{ $field.BigCamelName }}() 
 	return res
 }
 {{ end }}
+`

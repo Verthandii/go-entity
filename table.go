@@ -28,7 +28,7 @@ type Table struct {
 	FirstLetter  string
 	Imports      string
 	BigCamelName string
-	Fields       []Field
+	Fields       []Field `gorm:"-"`
 }
 
 type Field struct {
@@ -47,15 +47,15 @@ func GetTables() []Table {
 	var tables []Table
 	if len(Cfg.Tables) > 0 {
 		TableSQL += " AND table_name IN (?)"
-		connection.DB.Raw(TableSQL, Cfg.DbName, Cfg.Tables).Scan(&tables)
+		connection.Raw(TableSQL, Cfg.DBName, Cfg.Tables).Scan(&tables)
 	} else {
-		connection.DB.Raw(TableSQL, Cfg.DbName).Scan(&tables)
+		connection.Raw(TableSQL, Cfg.DBName).Scan(&tables)
 	}
 
 	// 查出每个表的字段信息
 	for i, table := range tables {
 		var columns []Field
-		connection.DB.Raw(FieldSQL, Cfg.DbName, table.Name).Scan(&columns)
+		connection.Raw(FieldSQL, Cfg.DBName, table.Name).Scan(&columns)
 		tables[i].Fields = columns
 	}
 	return initTables(tables)
@@ -100,7 +100,7 @@ func initTables(tables []Table) []Table {
 			}
 			tag += fmt.Sprintf(`json:"%s"`, tables[i].Fields[j].Name)
 
-			tables[i].Fields[j].Tag = tag
+			tables[i].Fields[j].Tag = fmt.Sprintf("`%s`", tag)
 		}
 	}
 

@@ -1,31 +1,32 @@
 package main
 
 import (
+	"io/fs"
 	"os"
 
 	"github.com/spf13/viper"
 )
 
 type Config struct {
-	Host      string   `json:"host"      mapstructure:"host"`
-	User      string   `json:"user"      mapstructure:"user"`
-	Pwd       string   `json:"pwd"       mapstructure:"pwd"`
-	DbName    string   `json:"db_name"   mapstructure:"dbname"`
-	Collation string   `json:"collation" mapstructure:"collation"`
-	Tables    []string `json:"tables"    mapstructure:"tables"`
-	Output    string   `json:"output"    mapstructure:"output"`
-	Terminal  bool     `json:"terminal"  mapstructure:"terminal"`
+	Host     string   `mapstructure:"host"`
+	Port     int      `mapstructure:"port"`
+	Username string   `mapstructure:"username"`
+	Password string   `mapstructure:"password"`
+	DBName   string   `mapstructure:"dbname"`
+	Tables   []string `mapstructure:"tables"`
+	Output   string   `mapstructure:"output"`
+	Terminal bool     `mapstructure:"terminal"`
 }
 
 var Cfg = Config{
-	Host:      "",
-	User:      "root",
-	Pwd:       "",
-	DbName:    "",
-	Collation: "utf8mb4_unicode_ci",
-	Tables:    nil,
-	Output:    "./model",
-	Terminal:  false,
+	Host:     "127.0.0.1",
+	Port:     3306,
+	Username: "root",
+	Password: "root",
+	DBName:   "test",
+	Tables:   nil,
+	Output:   "./model",
+	Terminal: false,
 }
 
 func initConfig() {
@@ -36,10 +37,9 @@ func initConfig() {
 
 	viper.SetConfigFile(path + "/db.json")
 	if err = viper.ReadInConfig(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+		if _, ok := err.(*fs.PathError); ok {
 			panic("未找到配置文件")
 		} else {
-			// Config file was found but another error was produced
 			panic(err)
 		}
 	}

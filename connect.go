@@ -1,36 +1,26 @@
 package main
 
 import (
-	"github.com/go-sql-driver/mysql"
-	"github.com/jinzhu/gorm"
+	"fmt"
+
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
-type Connection struct {
-	DB *gorm.DB
-}
-
-func connectMySQL() Connection {
-	cfg := mysql.Config{
-		Addr:                 Cfg.Host,
-		User:                 Cfg.User,
-		Passwd:               Cfg.Pwd,
-		DBName:               Cfg.DbName,
-		Net:                  "tcp",
-		Collation:            Cfg.Collation,
-		AllowNativePasswords: true,
-	}
-	db, err := gorm.Open("mysql", cfg.FormatDSN())
+func connectMySQL() *gorm.DB {
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		Cfg.Username, Cfg.Password, Cfg.Host, Cfg.Port, Cfg.DBName)
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
 
-	err = db.DB().Ping()
+	rawDB, err := db.DB()
 	if err != nil {
 		panic(err)
 	}
-	return Connection{DB: db}
-}
-
-func (db *Connection) Close() {
-	db.DB.Close()
+	if err = rawDB.Ping(); err != nil {
+		panic(err)
+	}
+	return db
 }

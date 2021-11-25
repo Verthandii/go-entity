@@ -34,7 +34,27 @@ func ({{ $FirstLetter }} *{{ $TableName }}) Wh{{ $field.BigCamelName }}Eq(v {{ $
 	return {{ $FirstLetter }}
 }
 
+func ({{ $FirstLetter }} *{{ $TableName }}) ZWh{{ $field.BigCamelName }}Eq(v {{ $field.DataType }}) *{{ $TableName }} {
+	{{ if eq $field.DataType "int" }} if v == 0 { return {{ $FirstLetter }} }
+	{{ else if eq $field.DataType "string" }} if v == "" { return {{ $FirstLetter }} }
+	{{ else if eq $field.DataType "float64" }} if v == 0 { return {{ $FirstLetter }} }
+	{{ else if eq $field.DataType "time.Time" }} if v.IsZero() { return {{ $FirstLetter }} }{{ end }}
+
+	{{ $FirstLetter }}.db.Where("{{ $field.Name }} = ?", v)
+	return {{ $FirstLetter }}
+}
+
 func ({{ $FirstLetter }} *{{ $TableName }}) Wh{{ $field.BigCamelName }}NotEq(v {{ $field.DataType }}) *{{ $TableName }} {
+	{{ $FirstLetter }}.db.Where("{{ $field.Name }} != ?", v)
+	return {{ $FirstLetter }}
+}
+
+func ({{ $FirstLetter }} *{{ $TableName }}) ZWh{{ $field.BigCamelName }}NotEq(v {{ $field.DataType }}) *{{ $TableName }} {
+	{{ if eq $field.DataType "int" }} if v == 0 { return {{ $FirstLetter }} }
+	{{ else if eq $field.DataType "string" }} if v == "" { return {{ $FirstLetter }} }
+	{{ else if eq $field.DataType "float64" }} if v == 0 { return {{ $FirstLetter }} }
+	{{ else if eq $field.DataType "time.Time" }} if v.IsZero() { return {{ $FirstLetter }} }{{ end }}
+
 	{{ $FirstLetter }}.db.Where("{{ $field.Name }} != ?", v)
 	return {{ $FirstLetter }}
 }
@@ -44,8 +64,25 @@ func ({{ $FirstLetter }} *{{ $TableName }}) Wh{{ $field.BigCamelName }}In(v []{{
 	return {{ $FirstLetter }}
 }
 
+func ({{ $FirstLetter }} *{{ $TableName }}) ZWh{{ $field.BigCamelName }}In(v []{{ $field.DataType }}) *{{ $TableName }} {
+	if len(v) == 0 { return {{ $FirstLetter }} }
+
+	{{ $FirstLetter }}.db.Where("{{ $field.Name }} IN ?", v)
+	return {{ $FirstLetter }}
+}
+
 {{ if eq $field.DataType "string" }}
 func ({{ $FirstLetter }} *{{ $TableName }}) Wh{{ $field.BigCamelName }}Like(v {{ $field.DataType }}) *{{ $TableName }} {
+	{{ $FirstLetter }}.db.Where("{{ $field.Name }} LIKE ?", fmt.Sprintf("%%%s%%", v))
+	return {{ $FirstLetter }}
+}
+
+func ({{ $FirstLetter }} *{{ $TableName }}) ZWh{{ $field.BigCamelName }}Like(v {{ $field.DataType }}) *{{ $TableName }} {
+	{{ if eq $field.DataType "int" }} if v == 0 { return {{ $FirstLetter }} }
+	{{ else if eq $field.DataType "string" }} if v == "" { return {{ $FirstLetter }} }
+	{{ else if eq $field.DataType "float64" }} if v == 0 { return {{ $FirstLetter }} }
+	{{ else if eq $field.DataType "time.Time" }} if v.IsZero() { return {{ $FirstLetter }} }{{ end }}
+
 	{{ $FirstLetter }}.db.Where("{{ $field.Name }} LIKE ?", fmt.Sprintf("%%%s%%", v))
 	return {{ $FirstLetter }}
 }
@@ -67,7 +104,27 @@ func ({{ $FirstLetter }} *{{ $TableName }}) Or{{ $field.BigCamelName }}Eq(v {{ $
 	return {{ $FirstLetter }}
 }
 
+func ({{ $FirstLetter }} *{{ $TableName }}) ZOr{{ $field.BigCamelName }}Eq(v {{ $field.DataType }}) *{{ $TableName }} {
+	{{ if eq $field.DataType "int" }} if v == 0 { return {{ $FirstLetter }} }
+	{{ else if eq $field.DataType "string" }} if v == "" { return {{ $FirstLetter }} }
+	{{ else if eq $field.DataType "float64" }} if v == 0 { return {{ $FirstLetter }} }
+	{{ else if eq $field.DataType "time.Time" }} if v.IsZero() { return {{ $FirstLetter }} }{{ end }}
+
+	{{ $FirstLetter }}.db.Where("{{ $field.Name }} = ?", v)
+	return {{ $FirstLetter }}
+}
+
 func ({{ $FirstLetter }} *{{ $TableName }}) Or{{ $field.BigCamelName }}NotEq(v {{ $field.DataType }}) *{{ $TableName }} {
+	{{ $FirstLetter }}.db.Where("{{ $field.Name }} != ?", v)
+	return {{ $FirstLetter }}
+}
+
+func ({{ $FirstLetter }} *{{ $TableName }}) ZOr{{ $field.BigCamelName }}NotEq(v {{ $field.DataType }}) *{{ $TableName }} {
+	{{ if eq $field.DataType "int" }} if v == 0 { return {{ $FirstLetter }} }
+	{{ else if eq $field.DataType "string" }} if v == "" { return {{ $FirstLetter }} }
+	{{ else if eq $field.DataType "float64" }} if v == 0 { return {{ $FirstLetter }} }
+	{{ else if eq $field.DataType "time.Time" }} if v.IsZero() { return {{ $FirstLetter }} }{{ end }}
+
 	{{ $FirstLetter }}.db.Where("{{ $field.Name }} != ?", v)
 	return {{ $FirstLetter }}
 }
@@ -77,8 +134,25 @@ func ({{ $FirstLetter }} *{{ $TableName }}) Or{{ $field.BigCamelName }}In(v []{{
 	return {{ $FirstLetter }}
 }
 
+func ({{ $FirstLetter }} *{{ $TableName }}) ZOr{{ $field.BigCamelName }}In(v []{{ $field.DataType }}) *{{ $TableName }} {
+	if len(v) == 0 { return {{ $FirstLetter }} }
+
+	{{ $FirstLetter }}.db.Where("{{ $field.Name }} IN ?", v)
+	return {{ $FirstLetter }}
+}
+
 {{ if eq $field.DataType "string" }}
 func ({{ $FirstLetter }} *{{ $TableName }}) Or{{ $field.BigCamelName }}Like(v {{ $field.DataType }}) *{{ $TableName }} {
+	{{ $FirstLetter }}.db.Where("{{ $field.Name }} LIKE ?", fmt.Sprintf("%%%s%%", v))
+	return {{ $FirstLetter }}
+}
+
+func ({{ $FirstLetter }} *{{ $TableName }}) ZOr{{ $field.BigCamelName }}Like(v {{ $field.DataType }}) *{{ $TableName }} {
+	{{ if eq $field.DataType "int" }} if v == 0 { return {{ $FirstLetter }} }
+	{{ else if eq $field.DataType "string" }} if v == "" { return {{ $FirstLetter }} }
+	{{ else if eq $field.DataType "float64" }} if v == 0 { return {{ $FirstLetter }} }
+	{{ else if eq $field.DataType "time.Time" }} if v.IsZero() { return {{ $FirstLetter }} }{{ end }}
+
 	{{ $FirstLetter }}.db.Where("{{ $field.Name }} LIKE ?", fmt.Sprintf("%%%s%%", v))
 	return {{ $FirstLetter }}
 }

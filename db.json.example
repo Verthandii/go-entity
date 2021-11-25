@@ -5,6 +5,6 @@
   "password": "root",
   "dbname": "test",
   "tables": ["user"],
-  "output": "./model",
+  "output": "./pkg/",
   "terminal": false
 }

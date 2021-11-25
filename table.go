@@ -37,8 +37,9 @@ type Field struct {
 	Comment  string
 	DataType string
 
-	BigCamelName string
-	Tag          string
+	BigCamelName   string
+	SmallCamelName string
+	Tag            string
 }
 
 func GetTables() []Table {
@@ -74,6 +75,7 @@ func initTables(tables []Table) []Table {
 		for j := range tables[i].Fields {
 			tables[i].Fields[j].Comment = strings.ReplaceAll(tables[i].Fields[j].Comment, "\n", " ")
 			tables[i].Fields[j].BigCamelName = ToBigCamelCase(tables[i].Fields[j].Name)
+			tables[i].Fields[j].SmallCamelName = ToSmallCamelCase(tables[i].Fields[j].Name)
 			tables[i].Fields[j].DataType = TransformType(tables[i].Fields[j].DataType)
 
 			if tables[i].Fields[j].DataType == "time.Time" {

@@ -9,20 +9,20 @@ import (
 )
 
 func generateQuery(tables []Table) {
-	t := template.New("query_tmpl")
-	t, err := t.Parse(queryTmpl)
+	t := template.New("querypath_tmpl")
+	t, err := t.Parse(querypathTmpl)
 	if err != nil {
 		panic(err)
 	}
 
-	formated, err := format.Source([]byte(queryGo))
+	formated, err := format.Source([]byte(querypathGo))
 	if err != nil {
 		log.Fatalln("format source occurred error:", err)
 	}
 	if Cfg.Terminal {
 		fmt.Println(string(formated))
 	} else {
-		WriteFile(formated, Cfg.Output+"query/", "query.go")
+		WriteFile(formated, Cfg.Output+"querypath/", "querypath.go")
 	}
 
 	for _, table := range tables {
@@ -40,7 +40,7 @@ func generateQuery(tables []Table) {
 		if Cfg.Terminal {
 			fmt.Println(string(formated))
 		} else {
-			WriteFile(formated, Cfg.Output+"query/", table.Name+".go")
+			WriteFile(formated, Cfg.Output+"querypath/", table.Name+".go")
 		}
 	}
 }

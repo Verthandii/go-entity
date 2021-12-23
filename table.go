@@ -82,18 +82,18 @@ func initTables(tables []Table) []Table {
 				tables[i].Imports = `import "time"`
 			}
 
-			tagGORMLen := len(tables[i].Fields[j].Name)
+			tagGORMLen := len(fmt.Sprintf("column:%s", tables[i].Fields[j].Name))
 			if tables[i].Fields[j].ColKey == "PRI" {
-				tagGORMLen += len(";PRIMARY_KEY")
+				tagGORMLen += len(";primaryKey")
 			}
 
 			longestTagGORMLen = MaxFunc(longestTagGORMLen, tagGORMLen)
 		}
 
 		for j := range tables[i].Fields {
-			gormTag := tables[i].Fields[j].Name
+			gormTag := fmt.Sprintf("column:%s", tables[i].Fields[j].Name)
 			if tables[i].Fields[j].ColKey == "PRI" {
-				gormTag += ";PRIMARY_KEY"
+				gormTag += ";primaryKey"
 			}
 
 			tag := fmt.Sprintf(`gorm:"%s"`, gormTag)

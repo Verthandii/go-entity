@@ -58,7 +58,7 @@ package model
 
 // Media 媒体表
 type Media struct {
-	Id   string `gorm:"id;PRIMARY_KEY" json:"id"`   //
+	Id   string `gorm:"id;primaryKey" json:"id"`   //
 	Url  string `gorm:"url"            json:"url"`  //
 	Type int    `gorm:"type"           json:"type"` // 1. 图片
 }

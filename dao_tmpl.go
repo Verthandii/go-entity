@@ -18,6 +18,26 @@ func (*{{ $TableName }}Dao) Transaction(db *gorm.DB, fc func(tx *gorm.DB) error)
 	return db.Transaction(fc)
 }
 
+// 增
+
+func (*{{ $TableName }}Dao) Create(tx *gorm.DB, v interface{}) error {
+	return querypath.New{{ $TableName }}(tx).Create(v)
+}
+
+// 删
+
+func (*{{ $TableName }}Dao) DeleteById(tx *gorm.DB, id int) error {
+	return querypath.New{{ $TableName }}(tx).WhIdEq(id).Delete(&model.{{ $TableName }}{})
+}
+
+// 改
+
+func (*{{ $TableName }}Dao) UpdateById(tx *gorm.DB, id int, v interface{}) error {
+	return querypath.New{{ $TableName }}(tx).WhIdEq(id).Update(v)
+}
+
+// 查
+
 func (*{{ $TableName }}Dao) List(q *querypath.{{ $TableName }}) (model.{{ $TableName }}Slice, error) {
 	vs := make(model.{{ $TableName }}Slice, 0)
 	if err := q.Find(&vs); err != nil {
@@ -34,17 +54,5 @@ func (*{{ $TableName }}Dao) First(q *querypath.{{ $TableName }}) (*model.{{ $Tab
 	}
 
 	return v, nil
-}
-
-func (*{{ $TableName }}Dao) Delete(q *querypath.{{ $TableName }}) error {
-	return q.Delete(&model.{{ $TableName }}{})
-}
-
-func (*{{ $TableName }}Dao) Create(q *querypath.{{ $TableName }}, v interface{}) error {
-	return q.Create(v)
-}
-
-func (*{{ $TableName }}Dao) Update(q *querypath.{{ $TableName }}, v interface{}) error {
-	return q.Update(v)
 }
 `

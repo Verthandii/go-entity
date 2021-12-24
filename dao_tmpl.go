@@ -47,12 +47,34 @@ func (*{{ $TableName }}Dao) List(q *querypath.{{ $TableName }}) (model.{{ $Table
 	return vs, nil
 }
 
+func (*{{ $TableName }}Dao) ListPagination(q *querypath.{{ $TableName }}, page, size int) (model.{{ $TableName }}Slice, *querypath.Paginate, error) {
+	vs := make(model.{{ $TableName }}Slice, 0)
+	p, err := q.SetPaginate(&querypath.Paginate{
+		Page: page,
+		Size: size,
+	}).Paginate(&vs)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return vs, p, nil
+}
+
 func (*{{ $TableName }}Dao) First(q *querypath.{{ $TableName }}) (*model.{{ $TableName }}, error) {
 	v := &model.{{ $TableName }}{}
 	if err := q.First(v); err != nil {
 		return nil, err
 	}
 
+	return v, nil
+}
+
+func (*{{ $TableName }}Dao) FirstById(tx *gorm.DB, id int) (*model.{{ $TableName }}, error) {
+	v := &model.{{ $TableName }}{}
+	if err := querypath.New{{ $TableName }}(tx).WhIdEq(id).First(v); err != nil {
+		return nil, err
+	}
+	
 	return v, nil
 }
 `

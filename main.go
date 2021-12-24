@@ -5,4 +5,5 @@ func main() {
 	tables := GetTables()
 	generateModel(tables)
 	generateQuery(tables)
+	generateDao(tables)
 }

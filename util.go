@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -73,5 +74,5 @@ func WriteFile(data []byte, output string, filename string) {
 	if err != nil {
 		log.Fatalln("write file occurred error:", err)
 	}
-	log.Println("complete file", filename)
+	log.Println(fmt.Sprintf("complete file %s%s", output, filename))
 }

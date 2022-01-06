@@ -8,9 +8,9 @@ import (
 	"text/template"
 )
 
-func generateDAO(tables []Table) {
-	t := template.New("dao_tmpl")
-	t, err := t.Parse(daoTmpl)
+func generateDO(tables []Table) {
+	t := template.New("do_tmpl")
+	t, err := t.Parse(doTmpl)
 	if err != nil {
 		panic(err)
 	}
@@ -30,7 +30,7 @@ func generateDAO(tables []Table) {
 		if Cfg.Terminal {
 			fmt.Println(string(formated))
 		} else {
-			WriteFile(formated, Cfg.Output+"dao/", table.Name+".go")
+			WriteFile(formated, Cfg.Output+"do/", table.Name+".go")
 		}
 	}
 }

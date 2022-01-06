@@ -38,7 +38,7 @@ func (*{{ $TableName }}) UpdateById(tx *gorm.DB, id int, v interface{}) error {
 
 // 查
 
-func (*{{ $TableName }}) List(q *querypath.{{ $TableName }}) (model.{{ $TableName }}Slice, error) {
+func (*{{ $TableName }}) Find(q *querypath.{{ $TableName }}) (model.{{ $TableName }}Slice, error) {
 	vs := make(model.{{ $TableName }}Slice, 0)
 	if err := q.Find(&vs); err != nil {
 		return nil, err
@@ -47,7 +47,7 @@ func (*{{ $TableName }}) List(q *querypath.{{ $TableName }}) (model.{{ $TableNam
 	return vs, nil
 }
 
-func (*{{ $TableName }}) ListPagination(q *querypath.{{ $TableName }}, page, size int) (model.{{ $TableName }}Slice, *querypath.Paginate, error) {
+func (*{{ $TableName }}) FindPagination(q *querypath.{{ $TableName }}, page, size int) (model.{{ $TableName }}Slice, *querypath.Paginate, error) {
 	vs := make(model.{{ $TableName }}Slice, 0)
 	p, err := q.SetPaginate(&querypath.Paginate{
 		Page: page,

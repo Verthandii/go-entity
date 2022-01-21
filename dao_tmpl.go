@@ -77,4 +77,8 @@ func (*{{ $TableName }}) FirstById(tx *gorm.DB, id int) (*model.{{ $TableName }}
 	
 	return v, nil
 }
+
+func (*{{ $TableName }}) Count(q *querypath.{{ $TableName }}) (int64, error) {
+	return q.Count()
+}
 `

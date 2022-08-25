@@ -1,10 +1,6 @@
 package main
 
 import (
-	"fmt"
-	"io/ioutil"
-	"log"
-	"os"
 	"strings"
 )
 
@@ -19,6 +15,13 @@ func ToBigCamelCase(str string) string {
 	for _, s := range strs {
 		r := []rune(s)
 		if len(r) > 0 {
+			for _, word := range Cfg.BigCamelCaseWords {
+				if word == s {
+					for i := range r {
+						r[i] -= 32
+					}
+				}
+			}
 			if r[0] >= 'a' && r[0] <= 'z' {
 				r[0] -= 32
 			}
@@ -45,8 +48,12 @@ func ToSmallCamelCase(str string) string {
 				continue
 			}
 
-			if r[0] >= 'a' && r[0] <= 'z' {
-				r[0] -= 32
+			for _, word := range Cfg.BigCamelCaseWords {
+				if word == s {
+					for j := range r {
+						r[j] -= 32
+					}
+				}
 			}
 			result += string(r)
 		}
@@ -60,19 +67,4 @@ func MaxFunc(i, j int) int {
 		return i
 	}
 	return j
-}
-
-func WriteFile(data []byte, output string, filename string) {
-	_, err := os.Open(output)
-	if err != nil {
-		err = os.MkdirAll(output, 0644)
-		if err != nil {
-			log.Fatalln("os mkdir occurred error:", err)
-		}
-	}
-	err = ioutil.WriteFile(output+filename, data, 0644)
-	if err != nil {
-		log.Fatalln("write file occurred error:", err)
-	}
-	log.Println(fmt.Sprintf("complete file %s%s", output, filename))
 }

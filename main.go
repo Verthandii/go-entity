@@ -1,10 +1,11 @@
 package main
 
+const _prefix = "gen_"
+
 func main() {
 	initConfig()
 	tables := GetTables()
 	generateModel(tables)
-	generateQuery(tables)
-	generateDAO(tables)
-	generateDO(tables)
+	// TODO Query 重写
+	// generateQuery(tables)
 }

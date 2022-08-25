@@ -1,12 +1,16 @@
 # Why to use go-entity
 
-解脱双手，一键生成 gorm 所需要的 entity。
+解脱双手，一键生成 `gorm` 所需要的 `entity`。
 
 # How to use
 
 ## Configuration
 
 参照 `db.json.example` 中的格式编写配置文件，保存文件名为`db.json`。
+
+表名为 `Xxx_1` 时，会生成可分表的 `model`。(注意需要将数字**最大**的表名写上，不然会导致分表 `mod` 错误。)
+
+字段名为 `deleted_at` 时，此字段的类型会变成 `soft_delete.DeletedAt`。（暂时只支持 `int` 类型的软删除。下次更新支持 `time.Time` 的软删除。）
 
 ```json
 {
@@ -15,16 +19,18 @@
   "username": "root",
   "password": "root",
   "dbname": "test",
-  "tables": ["user"],
+  "tables": [
+    "user"
+  ],
   "output": "./pkg/",
   "terminal": false
 }
 ```
 
 > tables 为空数组时，表示对所有的表生成代码
-> 
+>
 > output 指定输出目录，只有当 terminal 为 false 时生效
-> 
+>
 > terminal 为 true 时输出到控制台
 
 ## Get Started
@@ -58,7 +64,7 @@ package model
 
 // Media 媒体表
 type Media struct {
-	Id   string `gorm:"id;primaryKey" json:"id"`   //
+	ID   string `gorm:"id;primaryKey" json:"id"`    //
 	Url  string `gorm:"url"            json:"url"`  //
 	Type int    `gorm:"type"           json:"type"` // 1. 图片
 }
@@ -69,10 +75,10 @@ func (*Media) TableName() string {
 
 type MediaSlice []*Media
 
-func (m *MediaSlice) IdMap() map[string]*Media {
+func (m *MediaSlice) IDMap() map[string]*Media {
 	uni := make(map[string]*Media)
 	for _, item := range *m {
-		uni[item.Id] = item
+		uni[item.ID] = item
 	}
 	return uni
 }
@@ -93,10 +99,10 @@ func (m *MediaSlice) GroupByType() map[int]MediaSlice {
 	return res
 }
 
-func (m *MediaSlice) PluckId() []string {
+func (m *MediaSlice) PluckID() []string {
 	res := make([]string, 0, len(*m))
 	for _, item := range *m {
-		res = append(res, item.Id)
+		res = append(res, item.ID)
 	}
 	return res
 }
@@ -117,11 +123,11 @@ func (m *MediaSlice) PluckType() []int {
 	return res
 }
 
-func (m *MediaSlice) UniqueId() []string {
+func (m *MediaSlice) UniqueID() []string {
 	uni := make(map[string]struct{})
 	res := make([]string, 0)
 	for _, item := range *m {
-		uni[item.Id] = struct{}{}
+		uni[item.ID] = struct{}{}
 	}
 	for key := range uni {
 		res = append(res, key)

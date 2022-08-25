@@ -8,25 +8,27 @@ import (
 )
 
 type Config struct {
-	Host     string   `mapstructure:"host"`
-	Port     int      `mapstructure:"port"`
-	Username string   `mapstructure:"username"`
-	Password string   `mapstructure:"password"`
-	DBName   string   `mapstructure:"dbname"`
-	Tables   []string `mapstructure:"tables"`
-	Output   string   `mapstructure:"output"`
-	Terminal bool     `mapstructure:"terminal"`
+	Host              string   `mapstructure:"host"`
+	Port              int      `mapstructure:"port"`
+	Username          string   `mapstructure:"username"`
+	Password          string   `mapstructure:"password"`
+	DBName            string   `mapstructure:"dbname"`
+	Tables            []string `mapstructure:"tables"`
+	Output            string   `mapstructure:"output"`
+	Terminal          bool     `mapstructure:"terminal"`
+	BigCamelCaseWords []string `mapstructure:"bigCamelCaseWords"`
 }
 
 var Cfg = Config{
-	Host:     "127.0.0.1",
-	Port:     3306,
-	Username: "root",
-	Password: "root",
-	DBName:   "test",
-	Tables:   nil,
-	Output:   "./model",
-	Terminal: false,
+	Host:              "127.0.0.1",
+	Port:              3306,
+	Username:          "root",
+	Password:          "root",
+	DBName:            "test",
+	Tables:            nil,
+	Output:            "./model",
+	Terminal:          false,
+	BigCamelCaseWords: []string{""},
 }
 
 func initConfig() {
@@ -38,7 +40,7 @@ func initConfig() {
 	viper.SetConfigFile(path + "/db.json")
 	if err = viper.ReadInConfig(); err != nil {
 		if _, ok := err.(*fs.PathError); ok {
-			panic("未找到配置文件")
+			panic("未找到配置文件，path=" + path + "/db.json")
 		} else {
 			panic(err)
 		}

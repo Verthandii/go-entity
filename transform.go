@@ -1,6 +1,11 @@
 package main
 
-func TransformType(typeStr string) string {
+func TransformType(typeStr, fieldName string) string {
+	switch fieldName {
+	case "deleted_at":
+		return "soft_delete.DeletedAt"
+	}
+
 	switch typeStr {
 	case "tinyint", "smallint", "mediumint", "int", "integer", "bigint", "year":
 		return "int"

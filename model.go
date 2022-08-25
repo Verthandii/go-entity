@@ -1,36 +1,47 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
-	"go/format"
 	"log"
 	"text/template"
+
+	"go-entity/writer"
 )
 
-func generateModel(tables []Table) {
+func generateModel(tables []*Table) {
 	t := template.New("model_tmpl")
 	t, err := t.Parse(modelTmpl)
 	if err != nil {
-		panic(err)
+		log.Fatalln("template parse err:", err)
+	}
+
+	t2 := template.New("model_field_tmpl")
+	t2, err = t2.Parse(modelFieldTmpl)
+	if err != nil {
+		log.Fatalln("template parse err:", err)
 	}
 
 	for _, table := range tables {
-		var modelsBuf bytes.Buffer
-		err = t.Execute(&modelsBuf, table)
-		if err != nil {
-			log.Fatalln("t.Execute error:", err)
+		w := writer.NewTemplateWriter(
+			t,
+			&writer.Config{
+				Terminal: Cfg.Terminal,
+				Path:     fmt.Sprintf("%s/model/", Cfg.Output),
+			},
+		)
+		if err = w.Write(table, fmt.Sprintf("%s%s.go", _prefix, table.Name)); err != nil {
+			log.Fatalln("write occurred error:", err)
 		}
 
-		formated, err := format.Source(modelsBuf.Bytes())
-		if err != nil {
-			log.Fatalln("format source occurred error:", err)
-		}
-
-		if Cfg.Terminal {
-			fmt.Println(string(formated))
-		} else {
-			WriteFile(formated, Cfg.Output+"model/", table.Name+".go")
+		w = writer.NewTemplateWriter(
+			t2,
+			&writer.Config{
+				Terminal: Cfg.Terminal,
+				Path:     fmt.Sprintf("%s/model/%s", Cfg.Output, table.PackageName),
+			},
+		)
+		if err = w.Write(table, fmt.Sprintf("%s%s.go", _prefix, table.Name)); err != nil {
+			log.Fatalln("write occurred error:", err)
 		}
 	}
 }

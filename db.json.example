@@ -6,5 +6,6 @@
   "dbname": "test",
   "tables": ["user"],
   "output": "./pkg/",
-  "terminal": false
+  "terminal": false,
+  "bigCamelCaseWords": ["id"]
 }
